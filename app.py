@@ -22,34 +22,53 @@ df = load_data()
 
 # 1. Asal Negara (Peta Lokasi Dealer)
 st.subheader("1. Asal Wilayah Penjualan Mobil")
+
+# Mendapatkan daftar wilayah unik dari data
 regions = df['Dealer_Region'].dropna().unique()
-geolocator = Nominatim(user_agent="dealer_locator")
+
+# Menginisialisasi geolocator dengan user_agent yang unik
+# User-agent diperlukan oleh Nominatim untuk mengidentifikasi aplikasi Anda
+geolocator = Nominatim(user_agent="car_sales_dashboard_app")
 
 locations = []
 for region in regions:
     try:
-        location = geolocator.geocode(region + ", USA")
+        # Mencoba melakukan geocoding untuk setiap wilayah
+        # Menambahkan ", USA" untuk membantu Nominatim menemukan lokasi yang relevan
+        # Menambahkan timeout untuk mencegah permintaan geocoding yang terlalu lama
+        location = geolocator.geocode(region + ", USA", timeout=10)
         if location:
             locations.append({
                 'region': region,
                 'lat': location.latitude,
                 'lon': location.longitude
             })
+            # Jeda 1 detik untuk menghindari rate limiting dari Nominatim (sangat penting!)
+            time.sleep(1)
+        else:
+            # Peringatan jika wilayah tidak dapat di-geocode
+            st.warning(f"Tidak dapat menemukan koordinat untuk wilayah: '{region}'. Melewatkan wilayah ini.")
+    except Exception as e:
+        # Menangani error umum selama proses geocoding
+        st.error(f"Terjadi error saat geocoding wilayah '{region}': {e}. Melewatkan wilayah ini.")
+        # Tetap jeda walaupun ada error untuk menghindari hammering service
         time.sleep(1)
-    except:
         continue
 
-# Buat peta
+# Inisialisasi peta Folium dengan lokasi pusat USA dan zoom awal
 map_dealers = folium.Map(location=[39.5, -98.35], zoom_start=4)
 
+# Menambahkan marker ke peta untuk setiap lokasi dealer
 for loc in locations:
+    # Menambahkan marker dengan lokasi, popup (nama wilayah), dan ikon mobil
+    # Ikon 'car' dengan prefix 'fa' (Font Awesome)
     folium.Marker(
         location=[loc['lat'], loc['lon']],
         popup=loc['region'],
         icon=folium.Icon(color='blue', icon='car', prefix='fa')
     ).add_to(map_dealers)
 
-# Tampilkan di Streamlit
+# Menampilkan peta di Streamlit
 st_folium(map_dealers, width=700, height=500)
 
 # 2. Brand Pesaing Terbesar
