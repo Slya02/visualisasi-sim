@@ -13,67 +13,45 @@ st.title("Analisis Penjualan Mobil di USA")
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("carSales.csv", delimiter=';')
-    df.columns = df.columns.str.strip()  # hilangkan spasi ekstra
-    df['Year'] = pd.to_datetime(df['Date']).dt.year
-    return df
+df = pd.read_csv("carSales.csv", delimiter=';')
+df.columns = df.columns.str.strip()  # hilangkan spasi ekstra
+df['Year'] = pd.to_datetime(df['Date']).dt.year
+return df
 
 df = load_data()
 
 # 1. Asal Negara (Peta Lokasi Dealer)
-import streamlit as st
-import pandas as pd
-import folium
-from streamlit_folium import st_folium
-from geopy.geocoders import Nominatim
-import time
-
-st.set_page_config(layout="wide")
-st.title("Analisis Wilayah Penjualan Mobil")
-
-# Load data
-@st.cache_data
-def load_data():
-    df = pd.read_csv("data_mobil.csv", sep=';')
-    df.columns = df.columns.str.strip()
-    df['Dealer_Region'] = df['Dealer_Region'].str.strip()
-    return df
-
-sales_df = load_data()
-
-# Peta Wilayah Penjualan
-st.subheader("Peta Lokasi Dealer Berdasarkan Wilayah")
+st.subheader("1. Asal Wilayah Penjualan Mobil")
 
 regions = df['Dealer_Region'].dropna().unique()
 geolocator = Nominatim(user_agent="dealer_locator")
 
 locations = []
 for region in regions:
-    try:
-        location = geolocator.geocode(region + ", USA")
-        if location:
-            locations.append({
-                'region': region,
-                'lat': location.latitude,
-                'lon': location.longitude
-            })
-        time.sleep(1)
-    except:
-        continue
+try:
+location = geolocator.geocode(region + ", USA")
+if location:
+locations.append({
+'region': region,
+'lat': location.latitude,
+'lon': location.longitude
+})
+time.sleep(1)
+except:
+continue
 
 # Buat peta
 map_dealers = folium.Map(location=[39.5, -98.35], zoom_start=4)
 
 for loc in locations:
-    folium.Marker(
-        location=[loc['lat'], loc['lon']],
-        popup=loc['region'],
-        icon=folium.Icon(color='blue', icon='car', prefix='fa')
-    ).add_to(map_dealers)
+folium.Marker(
+location=[loc['lat'], loc['lon']],
+popup=loc['region'],
+icon=folium.Icon(color='blue', icon='car', prefix='fa')
+).add_to(map_dealers)
 
 # Tampilkan di Streamlit
 st_folium(map_dealers, width=700, height=500)
-
 
 # 2. Brand Pesaing Terbesar
 st.subheader("2. Brand Mobil Pesaing Terbesar")
