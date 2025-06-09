@@ -42,6 +42,7 @@ for loc in locations:
         popup=loc['region'],
         icon=folium.Icon(color="blue", icon="info-sign")
     ).add_to(m)
+st_folium(m, width=700, height=500)
 
 # 2. Brand Pesaing Terbesar
 st.subheader("2. Brand Mobil Pesaing Terbesar")
