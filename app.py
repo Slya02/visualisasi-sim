@@ -1,56 +1,56 @@
-import streamlit as st
+import streamlit as stMore actions
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 import folium
 from streamlit_folium import st_folium
 from geopy.geocoders import Nominatim
 import time
 
 st.set_page_config(layout="wide")
-st.title("Analisis Wilayah Penjualan Mobil")
+st.title("Analisis Penjualan Mobil di USA")
 
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("carSales.csv", sep=';')
-    df.columns = df.columns.str.strip()
-    df['Dealer_Region'] = df['Dealer_Region'].str.strip()
+    df = pd.read_csv("carSales.csv", delimiter=';')
+    df.columns = df.columns.str.strip()  # hilangkan spasi ekstra
+    df['Year'] = pd.to_datetime(df['Date']).dt.year
     return df
 
-sales_df = load_data()
+df = load_data()
 
-# Peta Wilayah Penjualan
-st.subheader("Peta Lokasi Dealer Berdasarkan Wilayah")
-
-regions = sales_df['Dealer_Region'].dropna().unique()
+# 1. Asal Negara (Peta Lokasi Dealer)
+st.subheader("1. Asal Wilayah Penjualan Mobil")
 geolocator = Nominatim(user_agent="dealer_locator")
+regions = df['Dealer_Region'].dropna().unique()
+st.write("Daftar Region Unik:")
+st.write(regions)
 
 locations = []
 for region in regions:
     try:
-        location = geolocator.geocode(region + ", USA")
-        if location:
-            locations.append({
-                'region': region,
-                'lat': location.latitude,
-                'lon': location.longitude
-            })
-        time.sleep(1)
-    except:
-        continue
+        loc = geolocator.geocode(region + ", USA")
+        st.write(f"{region} → {loc}")  # Debug hasil geocoding
+        if loc:
+            locations.append({'region': region, 'lat': loc.latitude, 'lon': loc.longitude})
+        time.sleep(1)  # Hindari limit API
+    except Exception as e:
+        st.write(f"Error pada region '{region}': {e}")
 
-# Buat peta
-map_dealers = folium.Map(location=[39.5, -98.35], zoom_start=4)
+st.write("Hasil Lokasi:")
+st.write(locations)
 
+# Tampilkan peta dengan marker
+m = folium.Map(location=[39.5, -98.35], zoom_start=4)
 for loc in locations:
     folium.Marker(
         location=[loc['lat'], loc['lon']],
         popup=loc['region'],
-        icon=folium.Icon(color='blue', icon='car', prefix='fa')
-    ).add_to(map_dealers)
+        icon=folium.Icon(color="blue", icon="info-sign")
+    ).add_to(m)
 
-# Tampilkan di Streamlit
-st_folium(map_dealers, width=700, height=500)
-
+st_folium(m, width=700, height=500)
 
 # 2. Brand Pesaing Terbesar
 st.subheader("2. Brand Mobil Pesaing Terbesar")
@@ -85,7 +85,7 @@ fig3, ax3 = plt.subplots(figsize=(12, 6))
 sns.barplot(data=avg_price, x='Dealer_Region', y='Price', hue='Company', ax=ax3)
 ax3.set_title("Harga Rata-rata Mobil per Brand/Region")
 st.pyplot(fig3)
-
+More actions
 # 6. Tren Penjualan Tahunan
 st.subheader("6. Tren Penjualan per Tahun")
 trend = df.groupby(['Year', 'Dealer_Region']).size().reset_index(name='Total_Sales')
