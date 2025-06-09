@@ -13,10 +13,10 @@ st.title("Analisis Penjualan Mobil di USA")
 # Load data
 @st.cache_data
 def load_data():
-df = pd.read_csv("carSales.csv", delimiter=';')
-df.columns = df.columns.str.strip()  # hilangkan spasi ekstra
-df['Year'] = pd.to_datetime(df['Date']).dt.year
-return df
+  df = pd.read_csv("carSales.csv", delimiter=';')
+  df.columns = df.columns.str.strip()  # hilangkan spasi ekstra
+  df['Year'] = pd.to_datetime(df['Date']).dt.year
+  return df
 
 df = load_data()
 
