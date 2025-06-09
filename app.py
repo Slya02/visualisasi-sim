@@ -13,7 +13,7 @@ st.title("Analisis Penjualan Mobil di USA")
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("penjualan_mobil.csv")
+    df = pd.read_csv("carSales.csv")
     st.write("Kolom tersedia:", df.columns.tolist())  # ⬅️ cek kolom yang terbaca
     return df
 
