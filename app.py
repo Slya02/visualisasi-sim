@@ -22,9 +22,6 @@ df = load_data()
 
 # 1. Asal Negara (Peta Lokasi Dealer)
 st.subheader("1. Asal Wilayah Penjualan Mobil")
-
-st.subheader("Peta Lokasi Dealer Berdasarkan Wilayah")
-
 regions = df['Dealer_Region'].dropna().unique()
 geolocator = Nominatim(user_agent="dealer_locator")
 
