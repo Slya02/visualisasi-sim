@@ -37,8 +37,11 @@ for region in regions:
 
 m = folium.Map(location=[39.5, -98.35], zoom_start=4)
 for loc in locations:
-    folium.Marker([loc['lat'], loc['lon']], popup=loc['region']).add_to(m)
-st_folium(m, width=700, height=500)
+    folium.Marker(
+        location=[loc['lat'], loc['lon']],
+        popup=loc['region'],
+        icon=folium.Icon(color="blue", icon="info-sign")
+    ).add_to(m)
 
 # 2. Brand Pesaing Terbesar
 st.subheader("2. Brand Mobil Pesaing Terbesar")
