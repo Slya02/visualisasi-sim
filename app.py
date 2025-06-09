@@ -23,7 +23,7 @@ df = load_data()
 # 1. Asal Negara (Peta Lokasi Dealer)
 st.subheader("Peta Lokasi Dealer Berdasarkan Wilayah")
 
-regions = sales_df['Dealer_Region'].dropna().unique()
+regions = df['Dealer_Region'].dropna().unique()
 geolocator = Nominatim(user_agent="dealer_locator")
 
 locations = []
