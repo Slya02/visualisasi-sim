@@ -23,36 +23,37 @@ df = load_data()
 # 1. Asal Negara (Peta Lokasi Dealer)
 st.subheader("1. Asal Wilayah Penjualan Mobil")
 
-geolocator = Nominatim(user_agent="dealer_locator")
-regions = df['Dealer_Region'].dropna().unique()
+st.subheader("Peta Lokasi Dealer Berdasarkan Wilayah")
 
-st.write("Daftar Region Unik:")
-st.write(regions)
+regions = df['Dealer_Region'].dropna().unique()
+geolocator = Nominatim(user_agent="dealer_locator")
 
 locations = []
 for region in regions:
     try:
-        loc = geolocator.geocode(region + ", USA")
-        st.write(f"{region} → {loc}")  # Debug hasil geocoding
-        if loc:
-            locations.append({'region': region, 'lat': loc.latitude, 'lon': loc.longitude})
-        time.sleep(1)  # Hindari limit API
-    except Exception as e:
-        st.write(f"Error pada region '{region}': {e}")
+        location = geolocator.geocode(region + ", USA")
+        if location:
+            locations.append({
+                'region': region,
+                'lat': location.latitude,
+                'lon': location.longitude
+            })
+        time.sleep(1)
+    except:
+        continue
 
-st.write("Hasil Lokasi:")
-st.write(locations)
+# Buat peta
+map_dealers = folium.Map(location=[39.5, -98.35], zoom_start=4)
 
-# Tampilkan peta dengan marker
-m = folium.Map(location=[39.5, -98.35], zoom_start=4)
 for loc in locations:
     folium.Marker(
         location=[loc['lat'], loc['lon']],
         popup=loc['region'],
-        icon=folium.Icon(color="blue", icon="info-sign")
-    ).add_to(m)
+        icon=folium.Icon(color='blue', icon='car', prefix='fa')
+    ).add_to(map_dealers)
 
-st_folium(m, width=700, height=500)
+# Tampilkan di Streamlit
+st_folium(map_dealers, width=700, height=500)
 
 # 2. Brand Pesaing Terbesar
 st.subheader("2. Brand Mobil Pesaing Terbesar")
