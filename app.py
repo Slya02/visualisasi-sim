@@ -11,7 +11,7 @@ st.title("Analisis Wilayah Penjualan Mobil")
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data_mobil.csv", sep=';')
+    df = pd.read_csv("carSales.csv", sep=';')
     df.columns = df.columns.str.strip()
     df['Dealer_Region'] = df['Dealer_Region'].str.strip()
     return df
