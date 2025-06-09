@@ -1,0 +1,7 @@
+pandas==2.3.0
+numpy==2.3.0
+pip==24.3.1
+seaborn==0.13.2
+streamlit==1.45.1
+folium==0.19.7
+Nominatim==3.6.0
