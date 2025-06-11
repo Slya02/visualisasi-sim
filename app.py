@@ -21,7 +21,7 @@ def load_data():
 df = load_data()
 
 # 1. Asal Negara (Peta Lokasi Dealer)
-st.subheader("1. Asal Wilayah Penjualan Mobil")
+st.subheader("1. Di mana asal wilayah penjual mobil?")
 geolocator = Nominatim(user_agent="dealer_locator")
 regions = df['Dealer_Region'].dropna().unique()
 
@@ -41,7 +41,7 @@ for loc in locations:
 st_folium(m, width=700, height=500)
 
 # 2. Brand Pesaing Terbesar
-st.subheader("2. Brand Mobil Pesaing Terbesar")
+st.subheader("2. 2. Brand apa yang menjadi pesaing terberat di wilayah ini berdasarkan penjualan?")
 top3 = df['Company'].value_counts().nlargest(3)
 fig1, ax1 = plt.subplots()
 ax1.pie(top3, labels=top3.index, autopct='%1.1f%%', explode=[0.05]*3, shadow=True)
@@ -49,7 +49,7 @@ ax1.set_title("Top 3 Brand Mobil Terlaris")
 st.pyplot(fig1)
 
 # 3. Brand Teratas per Region
-st.subheader("3. Distribusi 5 Brand Terlaris per Region")
+st.subheader("3. Apa 5 brand terbesar yang menguasai pasar di masing masing wilayah?")
 top5 = df['Company'].value_counts().nlargest(5).index.tolist()
 df_top5 = df[df['Company'].isin(top5)]
 fig2, ax2 = plt.subplots(figsize=(10, 6))
@@ -58,7 +58,7 @@ ax2.set_title("Top 5 Brand per Wilayah")
 st.pyplot(fig2)
 
 # 4. Body Style Populer per Region
-st.subheader("4. Tipe Mobil Terpopuler per Region")
+st.subheader("4. Apa tipe gaya body yang paling banyak terjual di masing masing wilayah?")
 region_body = df.groupby(['Dealer_Region', 'Body_Style']).size().reset_index(name='Count')
 top3_body = region_body.sort_values(['Dealer_Region', 'Count'], ascending=[True, False]).groupby('Dealer_Region').head(3)
 g = sns.FacetGrid(top3_body, col='Dealer_Region', col_wrap=3, height=4)
@@ -67,7 +67,7 @@ g.set_titles("{col_name}"); g.set_axis_labels("Jumlah", "Body Style")
 st.pyplot(g.fig)
 
 # 5. Rata-rata Harga per Brand/Region
-st.subheader("5. Rata-rata Harga per Brand per Region")
+st.subheader("5. Berapa harga rata - rata setiap perusahaan di masing masing wilayah?")
 avg_price = df_top5.groupby(['Dealer_Region', 'Company'])['Price'].mean().reset_index()
 fig3, ax3 = plt.subplots(figsize=(12, 6))
 sns.barplot(data=avg_price, x='Dealer_Region', y='Price', hue='Company', ax=ax3)
@@ -75,7 +75,7 @@ ax3.set_title("Harga Rata-rata Mobil per Brand/Region")
 st.pyplot(fig3)
 
 # 6. Tren Penjualan Tahunan
-st.subheader("6. Tren Penjualan per Tahun")
+st.subheader("6. Bagaimana tren penjualan mobil di wilayah masing masing setiap tahun?")
 df['Date'] = pd.to_datetime(df['Date'])
 df['Year'] = df['Date'].dt.year
 df['Month'] = df['Date'].dt.to_period('M').astype(str)
