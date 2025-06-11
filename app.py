@@ -76,8 +76,20 @@ st.pyplot(fig3)
 
 # 6. Tren Penjualan Tahunan
 st.subheader("6. Tren Penjualan per Tahun")
-trend = df.groupby(['Year', 'Dealer_Region']).size().reset_index(name='Total_Sales')
+df['Date'] = pd.to_datetime(df['Date'])
+df['Year'] = df['Date'].dt.year
+df['Month'] = df['Date'].dt.to_period('M').astype(str)
+df = df[df['Year'] >= 2022]
+available_years = sorted(df['Year'].unique())
+selected_year = st.selectbox("Pilih Tahun", available_years)
+df_filtered = df[df['Year'] == selected_year]
+trend = df_filtered.groupby(['Month', 'Dealer_Region']).size().reset_index(name='Total_Sales')
+trend['Month'] = pd.to_datetime(trend['Month'])
+trend = trend.sort_values('Month')
 fig4, ax4 = plt.subplots(figsize=(12, 6))
-sns.lineplot(data=trend, x='Year', y='Total_Sales', hue='Dealer_Region', marker='o', ax=ax4)
-ax4.set_title("Tren Penjualan Mobil per Wilayah per Tahun")
+sns.lineplot(data=trend, x='Month', y='Total_Sales', hue='Dealer_Region', marker='o', ax=ax4)
+ax4.set_title(f"Tren Penjualan Mobil per Wilayah per Bulan - {selected_year}", fontsize=14, fontweight='bold')
+ax4.set_xlabel("Bulan")
+ax4.set_ylabel("Total Penjualan")
+ax4.tick_params(axis='x', rotation=45) 
 st.pyplot(fig4)
