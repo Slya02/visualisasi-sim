@@ -41,7 +41,7 @@ for loc in locations:
 st_folium(m, width=700, height=500)
 
 # 2. Brand Pesaing Terbesar
-st.subheader("2. 2. Brand apa yang menjadi pesaing terberat di wilayah ini berdasarkan penjualan?")
+st.subheader("2. Brand apa yang menjadi pesaing terberat di wilayah ini berdasarkan penjualan?")
 top3 = df['Company'].value_counts().nlargest(3)
 fig1, ax1 = plt.subplots()
 ax1.pie(top3, labels=top3.index, autopct='%1.1f%%', explode=[0.05]*3, shadow=True)
@@ -75,7 +75,7 @@ ax3.set_title("Harga Rata-rata Mobil per Brand/Region")
 st.pyplot(fig3)
 
 # 6. Tren Penjualan Tahunan
-st.subheader("6. Bagaimana tren penjualan mobil di wilayah masing masing setiap tahun?")
+st.subheader("6. Bagaimana tren penjualan mobil di wilayah masing masing setiap tahun dengan jangka waktu per bulan?")
 df['Date'] = pd.to_datetime(df['Date'])
 df['Year'] = df['Date'].dt.year
 df['Month'] = df['Date'].dt.to_period('M').astype(str)
