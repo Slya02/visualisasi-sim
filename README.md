@@ -1,8 +1,11 @@
 # visualisasi-sim
-Penjualan Mobil
-Role model: Seorang data analyst yang diminta mengambil data dari dataset yang ada. Di sini kami melihat sebuah peluang ekspansi baru
+Tugas akhir SIM
+Universitas Sumatera Utara
+Kelompok 2 Kom A1
+1. Sultansyah (231712001)
+2. Aidil Ramadhan Sitorus (231712007)
+3. Jose Marcelino Sihotang (231712016)
 
-Kelompok 2
-1. Sultansyah | 231712001
-2. Aidil Ramadhan Sitorus | 231712009
-3. Jose Marcellino Sihotang | 
+Role Model Kami: Business Analyst
+Dari data tersebut dapat ditarik kesimpulan
+Berdasarkan data, Austin, AS, merupakan wilayah potensial untuk ekspansi bisnis. Kami akan meluncurkan mobil bergaya SUV, Hatchback, dan Sedan dengan harga $20.000–$25.000 pada akhir Agustus, memanfaatkan tren peningkatan penjualan di bulan September sebagai momentum pemasaran.
